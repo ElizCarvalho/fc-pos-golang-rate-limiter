@@ -15,11 +15,21 @@ NC=\033[0m
 # ==============================================================================
 # Comandos de Execução
 # ==============================================================================
-.PHONY: help docker-up docker-down docker-logs test test-unit test-integration test-load test-load-automated test-load-burst test-load-sustained test-load-concurrency test-load-recovery test-load-spike clean
+.PHONY: help setup docker-up docker-down docker-logs test test-unit test-integration test-load test-load-automated test-load-burst test-load-sustained test-load-concurrency test-load-recovery test-load-spike clean
 
 help: ## Mostra comandos disponíveis
 	@echo "$(BLUE)Comandos disponíveis:$(NC)"
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  $(YELLOW)%-20s$(NC) %s\n", $$1, $$2}'
+
+setup: ## Configura ambiente (copia .env.example para .env)
+	@echo "$(BLUE)🔧 Configurando ambiente...$(NC)"
+	@if [ ! -f .env ]; then \
+		cp .env.example .env; \
+		echo "$(GREEN)✅ Arquivo .env criado a partir do .env.example$(NC)"; \
+		echo "$(YELLOW)📝 Edite o arquivo .env com suas configurações$(NC)"; \
+	else \
+		echo "$(YELLOW)⚠️  Arquivo .env já existe$(NC)"; \
+	fi
 
 docker-up: ## Sobe ambiente completo (Redis + App na porta 8080)
 	@echo "$(BLUE)🐳 Subindo ambiente completo...$(NC)"
