@@ -60,6 +60,7 @@ graph TD
 ## Alternativas Consideradas
 
 ### Fixed Window
+
 ```go
 // Problema: Burst no início da janela
 // Janela 1: [0-60s] - 0 requisições
@@ -67,12 +68,14 @@ graph TD
 ```
 
 ### Token Bucket
+
 ```go
 // Problema: Permite bursts que podem sobrecarregar o sistema
 // Bucket com 10 tokens: 10 requisições simultâneas no início
 ```
 
 ### Sliding Window Puro
+
 ```go
 // Problema: Permite requisições assim que entradas antigas saem da janela
 // Não atende ao requisito de bloqueio por tempo fixo
@@ -221,6 +224,7 @@ func (rl *RateLimiter) Check(ctx context.Context, identifier string, isToken boo
 ## Exemplo de Funcionamento
 
 ### Configuração
+
 ```yaml
 RATE_LIMIT_IP: 10
 RATE_LIMIT_WINDOW_SECONDS: 1
@@ -228,13 +232,15 @@ RATE_LIMIT_BLOCK_DURATION_SECONDS: 300  # 5 minutos
 ```
 
 ### Cenário de Teste
-```
+
+```bash
 Tempo: 0s    1s    2s    3s    4s    5s    6s    7s    8s    9s    10s
 Req:   [10]  [10]  [10]  [10]  [10]  [10]  [BLOCKED] [BLOCKED] [BLOCKED] [10]
 ```
 
 ### Chaves Redis
-```
+
+```bash
 ip:192.168.1.1        → Sorted Set com timestamps (Sliding Window)
 ip:192.168.1.1:block  → String "1" com TTL 300s (Block Duration)
 ```
