@@ -1,0 +1,48 @@
+### Rate Limiter API - Exemplos de Requisições
+
+# URL Base
+@baseUrl = http://localhost:8080
+
+### Health Check
+GET {{baseUrl}}/health
+
+### Documentação Swagger
+GET {{baseUrl}}/swagger/
+
+### Recurso com Rate Limiting por IP
+# Será limitado a 10 requisições por segundo por IP
+GET {{baseUrl}}/api/v1/resource
+
+### Recurso com Token Standard (100 req/s)
+# Usará limites específicos do token (prefixo std_)
+GET {{baseUrl}}/api/v1/resource
+API_KEY: std_1234567890
+
+### Recurso com Token Pro (1000 req/s)
+# Usará limites de token pro (prefixo pro_)
+GET {{baseUrl}}/api/v1/resource
+API_KEY: pro_1234567892
+
+### Recurso com Token Desconhecido
+# Retornará aos limites de IP (10 req/s)
+GET {{baseUrl}}/api/v1/resource
+API_KEY: unknown_token
+
+### Teste com IP Específico
+# Use X-Forwarded-For para simular IP específico
+GET {{baseUrl}}/api/v1/resource
+X-Forwarded-For: 192.168.1.100
+
+### Teste de Prioridade Token sobre IP
+# Token tem prioridade mesmo com X-Forwarded-For
+GET {{baseUrl}}/api/v1/resource
+API_KEY: std_1234567890
+X-Forwarded-For: 192.168.1.150
+
+### Headers de Rate Limit
+# Verifique os headers de resposta:
+# X-RateLimit-Limit: 100
+# X-RateLimit-Remaining: 99
+# X-RateLimit-Reset: 2024-01-15T10:30:01Z
+GET {{baseUrl}}/api/v1/resource
+API_KEY: std_1234567890
