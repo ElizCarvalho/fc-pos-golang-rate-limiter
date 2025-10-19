@@ -1,0 +1,70 @@
+basePath: /
+definitions:
+  response.SuccessResponse:
+    properties:
+      data: {}
+      message:
+        type: string
+      timestamp:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: elizabethcarvalho.ti@gmail.com
+    name: Eliz Carvalho
+    url: https://www.github.com/ElizCarvalho
+  description: Desafio técnico FullCycle - Rate Limiter API
+  termsOfService: http://swagger.io/terms/
+  title: FullCycle Rate Limiter API
+  version: "1.0"
+paths:
+  /api/v1/resource:
+    get:
+      consumes:
+      - application/json
+      description: Retorna um recurso de exemplo para testar rate limiting
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          headers:
+            X-RateLimit-Limit:
+              description: Limite de requisições por janela
+              type: string
+            X-RateLimit-Remaining:
+              description: Requisições restantes na janela atual
+              type: string
+            X-RateLimit-Reset:
+              description: Tempo quando o rate limit é resetado
+              type: string
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+      summary: Recurso de exemplo
+      tags:
+      - resource
+  /health:
+    get:
+      consumes:
+      - application/json
+      description: Verifica se o serviço está funcionando
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+      summary: Verificação de saúde
+      tags:
+      - health
+schemes:
+- http
+- https
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: API_KEY
+    type: apiKey
+swagger: "2.0"

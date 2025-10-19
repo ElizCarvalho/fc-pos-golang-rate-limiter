@@ -1,0 +1,103 @@
+{
+    "schemes": [
+        "http",
+        "https"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "description": "Desafio técnico FullCycle - Rate Limiter API",
+        "title": "FullCycle Rate Limiter API",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "Eliz Carvalho",
+            "url": "https://www.github.com/ElizCarvalho",
+            "email": "elizabethcarvalho.ti@gmail.com"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/",
+    "paths": {
+        "/api/v1/resource": {
+            "get": {
+                "description": "Retorna um recurso de exemplo para testar rate limiting",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "resource"
+                ],
+                "summary": "Recurso de exemplo",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.SuccessResponse"
+                        },
+                        "headers": {
+                            "X-RateLimit-Limit": {
+                                "type": "string",
+                                "description": "Limite de requisições por janela"
+                            },
+                            "X-RateLimit-Remaining": {
+                                "type": "string",
+                                "description": "Requisições restantes na janela atual"
+                            },
+                            "X-RateLimit-Reset": {
+                                "type": "string",
+                                "description": "Tempo quando o rate limit é resetado"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/health": {
+            "get": {
+                "description": "Verifica se o serviço está funcionando",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "health"
+                ],
+                "summary": "Verificação de saúde",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.SuccessResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "response.SuccessResponse": {
+            "type": "object",
+            "properties": {
+                "data": {},
+                "message": {
+                    "type": "string"
+                },
+                "timestamp": {
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "API_KEY",
+            "in": "header"
+        }
+    }
+}
