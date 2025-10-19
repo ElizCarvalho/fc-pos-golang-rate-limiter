@@ -52,7 +52,7 @@ test: ## Executa todos os testes
 
 test-unit: ## Executa apenas testes unitários
 	@echo "$(BLUE)🧪 Executando testes unitários...$(NC)"
-	@go test -v ./tests/unit/...
+	@go test -v ./internal/...
 
 test-integration: ## Executa apenas testes de integração
 	@echo "$(BLUE)🧪 Executando testes de integração...$(NC)"
