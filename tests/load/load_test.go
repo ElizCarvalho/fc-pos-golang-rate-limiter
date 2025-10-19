@@ -187,7 +187,7 @@ func TestLoadTokenRateLimit(t *testing.T) {
 	}
 	metrics.Close()
 
-	t.Logf("Resultados do teste de carga de token:")
+	t.Logf("Token load test results:")
 	t.Logf("  Total requests: %d", metrics.Requests)
 	t.Logf("  Successful requests: %d", int(metrics.Requests)-metrics.StatusCodes["429"])
 	t.Logf("  Rate limited requests: %d", metrics.StatusCodes["429"])
@@ -527,7 +527,7 @@ func TestLoadMassiveConcurrency(t *testing.T) {
 	var wg sync.WaitGroup
 	results := make(chan vegeta.Metrics, numUsers)
 
-	t.Logf("=== Teste de Concorrência Massiva (%d usuários simultâneos) ===", numUsers)
+	t.Logf("=== Massive Concurrency Test (%d concurrent users) ===", numUsers)
 
 	for i := 0; i < numUsers; i++ {
 		wg.Add(1)
