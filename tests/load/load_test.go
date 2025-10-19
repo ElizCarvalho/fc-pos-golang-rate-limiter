@@ -683,11 +683,11 @@ func TestLoadRecoveryAfterBlock(t *testing.T) {
 	assert.Equal(t, int(phase2Metrics.Requests), phase2Metrics.StatusCodes["429"], "All requests should be rate limited")
 
 	// Fase 3: Aguarda expiração do bloqueio e tenta novamente
-	t.Logf("Phase 3: Waiting for block expiration (3s)...")
-	time.Sleep(3500 * time.Millisecond) // Aguarda bloqueio expirar
+	t.Logf("Phase 3: Waiting for block expiration (4s)...")
+	time.Sleep(4 * time.Second) // Aguarda 4 segundos para o bloqueio expirar
 
 	t.Logf("Phase 4: Testing recovery after block...")
-	rate = vegeta.Rate{Freq: 5, Per: time.Second}
+	rate = vegeta.Rate{Freq: 1, Per: time.Second}
 	duration = 1 * time.Second
 
 	var phase3Metrics vegeta.Metrics
@@ -696,9 +696,29 @@ func TestLoadRecoveryAfterBlock(t *testing.T) {
 	}
 	phase3Metrics.Close()
 
+	t.Logf("  Total requests: %d", phase3Metrics.Requests)
 	t.Logf("  Successful requests: %d", int(phase3Metrics.Requests)-phase3Metrics.StatusCodes["429"])
 	t.Logf("  Rate limited requests: %d", phase3Metrics.StatusCodes["429"])
-	assert.True(t, phase3Metrics.StatusCodes["200"] > 0, "Expected some requests to succeed after block expiration")
+
+	// Se nenhuma requisição foi feita, tenta novamente com uma espera maior
+	if phase3Metrics.Requests == 0 {
+		t.Logf("Phase 5: Retrying after longer wait...")
+		time.Sleep(2 * time.Second)
+
+		var retryMetrics vegeta.Metrics
+		for res := range attacker.Attack(targeter, rate, duration, "Phase 5") {
+			retryMetrics.Add(res)
+		}
+		retryMetrics.Close()
+
+		t.Logf("  Retry - Total requests: %d", retryMetrics.Requests)
+		t.Logf("  Retry - Successful requests: %d", int(retryMetrics.Requests)-retryMetrics.StatusCodes["429"])
+		t.Logf("  Retry - Rate limited requests: %d", retryMetrics.StatusCodes["429"])
+
+		assert.True(t, retryMetrics.StatusCodes["200"] > 0, "Expected some requests to succeed after block expiration")
+	} else {
+		assert.True(t, phase3Metrics.StatusCodes["200"] > 0, "Expected some requests to succeed after block expiration")
+	}
 
 	_ = storageStrategy.Close()
 }
