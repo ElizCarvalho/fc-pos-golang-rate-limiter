@@ -117,6 +117,7 @@ type StorageStrategy interface {
 
 ```bash
 make help              # Ver todos os comandos
+make setup             # Configurar ambiente (.env)
 make docker-up         # Subir ambiente
 make docker-logs       # Ver logs
 make test              # Executar testes
